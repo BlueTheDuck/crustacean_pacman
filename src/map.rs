@@ -1,5 +1,6 @@
 use piston_window::Context;
 use piston_window::Transformed;
+use std::path::PathBuf;
 
 type BufFile = std::io::BufReader<std::fs::File>;
 
@@ -68,5 +69,26 @@ impl std::convert::From<BufFile> for Map {
             nodes.push(Node::from(props));
         }
         Self { nodes }
+    }
+}
+impl std::convert::From<&PathBuf> for Map {
+    fn from(file: &PathBuf) -> Self {
+        let mut new_map = Self::new(vec![]);
+        let mut nodes:Vec<Node> = vec![];
+
+        let mut reader = csv::Reader::from_path(file).expect("Couldn't open csv file");
+        for result in reader.records() {
+            let record: csv::StringRecord = result.expect("Error?");
+            println!("{:#?}", record);
+            let x = record.get(0).unwrap().parse::<f64>().expect("Couldn't parse record");
+            let y = record.get(1).unwrap().parse::<f64>().expect("Couldn't parse record");
+            nodes.push(Node {
+                pos:[x,y],
+                neighs:[None;4],
+                score: 0,
+                weight: None
+            })
+        }
+        Self::new(nodes)
     }
 }

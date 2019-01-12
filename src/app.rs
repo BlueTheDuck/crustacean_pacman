@@ -1,8 +1,8 @@
+use crate::entity::Entity;
 use opengl_graphics::GlGraphics;
 use opengl_graphics::Texture as GlTexture;
 use piston_window as pw;
 use piston_window::Transformed;
-use crate::entity::Entity;
 
 pub struct App<'a> {
     pub board: GlTexture,
@@ -33,9 +33,40 @@ impl<'a> App<'a> {
 
             //e.sprite.next_frame();
 
-            e.map.render(gl,c);
+            e.map.render(gl, c);
         }
 
         gl.draw_end();
+    }
+    pub fn update(&mut self) {
+        for e in &mut self.entities {
+            println!("Updating {}", &e.name.unwrap());
+            if e.pos==None {
+                continue;
+            }
+            let pos = e.pos.unwrap();
+            let speed = e.speed.unwrap();
+            e.pos = Some(
+                [pos[0]+speed[0],
+                pos[1]+speed[1]]
+            )
+        }
+    }
+    pub fn entities_update(&mut self, args: pw::ButtonArgs) {
+        println!("{:#?}", args);
+        if args.state==pw::ButtonState::Press {
+            match args.button {
+                pw::Button::Keyboard(key) => {
+                    self.entities[0].speed = Some(match key {
+                        pw::keyboard::Key::Up    => [ 0.0,-2.0],
+                        pw::keyboard::Key::Right => [ 2.0,0.0],
+                        pw::keyboard::Key::Down  => [ 0.0,2.0],
+                        pw::keyboard::Key::Left  => [-2.0,0.0],
+                        _ => [0.0,0.0]
+                    });
+                }
+                _ => {}
+            }
+        }
     }
 }

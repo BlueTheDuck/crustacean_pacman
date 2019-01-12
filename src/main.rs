@@ -2,13 +2,12 @@ extern crate find_folder;
 extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston_window;
+extern crate csv;
 
 use opengl_graphics::GlGraphics;
 use opengl_graphics::Texture as GlTexture;
 use piston_window as pw;
-use piston_window::*;
-use std::fs::File;
-use std::io::{BufRead,BufReader};
+use piston_window::{RenderEvent,ButtonEvent,UpdateEvent};
 
 mod app;
 mod entity;
@@ -20,7 +19,7 @@ fn main() {
         .exit_on_esc(true)
         .build()
         .unwrap();
-    let mut gl = GlGraphics::new(OpenGL::V3_2);
+    let mut gl = GlGraphics::new(pw::OpenGL::V3_2);
 
     let assets = find_folder::Search::ParentsThenKids(1, 1)
         .for_folder("assets")
@@ -34,10 +33,12 @@ fn main() {
     let board = GlTexture::from_path(&assets.join("board.png"), &pw::TextureSettings::new())
         .expect("Couldn't create board texture");
 
-    let nodes: Vec<map::Node> = vec![map::Node::new([18f64, 55f64], 1)];
-    //let mut dots: Vec<map::Node> = vec![];
+    let nodes: Vec<map::Node>;// = vec![map::Node::new([18f64, 55f64], 1)];
+
+    /*
+    let mut dots: Vec<map::Node> = vec![];
     let dots_file = BufReader::new(File::open(assets.join("dots.txt")).expect("Couldn't read dots"));
-    /*for line in BufReader::new(dots_file).lines() {
+    for line in BufReader::new(dots_file).lines() {
         let line:String = line.unwrap();
         if line[0..1] == String::from("#") {
             continue;
@@ -54,13 +55,19 @@ fn main() {
         nodes.push(map::Node::from(props));
     }*/
 
-    let pacman_map = map::Map::new(nodes.clone());
+    //let pacman_map = map::Map::new(nodes.clone());
+    let pacman_map = map::Map::from(&assets.join("nodes.csv"));
 
     let mut pacman = entity::Entity {
+        name: Some("Pacman"),
         sprite: sprite::Sprite::new(&sprite_sheet, [0f64, 0f64, 28f64, 28f64]),
         node: 0,
         map: pacman_map,
+        speed: Some([0f64;2]),
+        pos: None
     };
+    pacman.pos = Some(pacman.map.nodes[0].pos);
+
 
     let mut app = app::App {
         board: board,
@@ -71,7 +78,13 @@ fn main() {
         if let Some(mut args) = e.render_args() {
             app.render(args, &mut gl);
         }
-        if let Some(mut args) = e.update_args() {}
+        if let Some(mut args) = e.update_args() {
+            //println!("{:#?}", args);
+        }
+        if let Some(mut args) = e.button_args() {
+            app.entities_update(args);
+        }
         //println!("{:#?}", e);
+            app.update();
     }
 }

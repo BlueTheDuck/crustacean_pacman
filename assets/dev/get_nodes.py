@@ -1,6 +1,9 @@
 from PIL import Image, ImageDraw, ImageColor
 import csv
-
+"""
+Pillow: https://pillow.readthedocs.io/en/stable/reference/ImageDraw.html?highlight=draw_arc
+csv: https://docs.python.org/2/library/csv.html
+"""
 
 def color_to_html(color):
     return '#{:06X}'.format((color[0] << 16) + (color[1] << 8) + color[2])
