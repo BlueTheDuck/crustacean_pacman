@@ -35,10 +35,9 @@ fn main() {
         .expect("Couldn't create board texture");
 
     let nodes: Vec<map::Node> = vec![map::Node::new([18f64, 55f64], 1)];
-    /*let mut dots: Vec<map::Node> = vec![];
-    let dots_file = File::open(assets.join("dots.txt")).expect("Couldn't read dots");
-        
-    for line in BufReader::new(dots_file).lines() {
+    //let mut dots: Vec<map::Node> = vec![];
+    let dots_file = BufReader::new(File::open(assets.join("dots.txt")).expect("Couldn't read dots"));
+    /*for line in BufReader::new(dots_file).lines() {
         let line:String = line.unwrap();
         if line[0..1] == String::from("#") {
             continue;
