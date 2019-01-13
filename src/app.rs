@@ -1,5 +1,6 @@
+use crate::entity::Direction;
 use crate::entity::Entity;
-use opengl_graphics::GlGraphics;
+//use opengl_graphics::GlGraphics;
 use opengl_graphics::Texture as GlTexture;
 use piston_window as pw;
 use piston_window::Transformed;
@@ -7,6 +8,8 @@ use piston_window::Transformed;
 pub struct App<'a> {
     pub board: GlTexture,
     pub entities: Vec<Entity<'a>>,
+    pub player: usize,
+    pub ghosts: [usize; 4],
 }
 
 impl<'a> App<'a> {
@@ -19,7 +22,7 @@ impl<'a> App<'a> {
             let mut src_rect = e.sprite.src_rect;
             let frame = e.sprite.frame;
             src_rect[1] = src_rect[1] + src_rect[3] * frame as f64;
-            let pos = e.map.nodes[e.node].pos;
+            let pos = e.pos;
             let transform = c
                 .transform
                 .trans(pos[0] - src_rect[2] / 2.0, pos[1] - src_rect[3] / 2.0);
@@ -30,9 +33,6 @@ impl<'a> App<'a> {
                 transform,
                 gl,
             );
-
-            //e.sprite.next_frame();
-
             e.map.render(gl, c);
         }
 
@@ -40,32 +40,41 @@ impl<'a> App<'a> {
     }
     pub fn update(&mut self) {
         for e in &mut self.entities {
-            println!("Updating {}", &e.name.unwrap());
-            if e.pos==None {
-                continue;
+            e.update_pos();
+            let (node, distance) = e.map.get_nearest_node(e.pos);
+            if distance < 4.0 {
+                let old_node = e.node;
+                e.change_node(node);
+                if old_node != Some(node) {
+                    println!(
+                        "Updated node for {}. Now {}",
+                        e.name.unwrap(),
+                        e.node.unwrap()
+                    );
+                    println!("Changed node to {}. Valid directions now are {:#?}", node,e.map.nodes[node].neighs);
+                }
+            } else {
+                e.node = None;
             }
-            let pos = e.pos.unwrap();
-            let speed = e.speed.unwrap();
-            e.pos = Some(
-                [pos[0]+speed[0],
-                pos[1]+speed[1]]
-            )
         }
+
+        self.entities[self.player].sprite.next_frame();
     }
     pub fn entities_update(&mut self, args: pw::ButtonArgs) {
-        println!("{:#?}", args);
-        if args.state==pw::ButtonState::Press {
-            match args.button {
-                pw::Button::Keyboard(key) => {
-                    self.entities[0].speed = Some(match key {
-                        pw::keyboard::Key::Up    => [ 0.0,-2.0],
-                        pw::keyboard::Key::Right => [ 2.0,0.0],
-                        pw::keyboard::Key::Down  => [ 0.0,2.0],
-                        pw::keyboard::Key::Left  => [-2.0,0.0],
-                        _ => [0.0,0.0]
-                    });
+        let player: &mut Entity = &mut self.entities[self.player];
+        if args.state == pw::ButtonState::Press {
+            if let pw::Button::Keyboard(key) = args.button {
+                println!("Changing direction to {:#?}", key);
+                let could = player.change_direction(match key {
+                    pw::keyboard::Key::Up => Direction::Up,
+                    pw::keyboard::Key::Right => Direction::Right,
+                    pw::keyboard::Key::Down => Direction::Down,
+                    pw::keyboard::Key::Left => Direction::Left,
+                    _ => Direction::Stop,
+                });
+                if !could {
+                    println!("Couldn't change direction");
                 }
-                _ => {}
             }
         }
     }

@@ -1,13 +1,13 @@
+extern crate csv;
 extern crate find_folder;
 extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston_window;
-extern crate csv;
 
 use opengl_graphics::GlGraphics;
 use opengl_graphics::Texture as GlTexture;
 use piston_window as pw;
-use piston_window::{RenderEvent,ButtonEvent,UpdateEvent};
+use piston_window::{ButtonEvent, RenderEvent, UpdateEvent};
 
 mod app;
 mod entity;
@@ -33,7 +33,7 @@ fn main() {
     let board = GlTexture::from_path(&assets.join("board.png"), &pw::TextureSettings::new())
         .expect("Couldn't create board texture");
 
-    let nodes: Vec<map::Node>;// = vec![map::Node::new([18f64, 55f64], 1)];
+    //let nodes: Vec<map::Node>; // = vec![map::Node::new([18f64, 55f64], 1)];
 
     /*
     let mut dots: Vec<map::Node> = vec![];
@@ -61,30 +61,32 @@ fn main() {
     let mut pacman = entity::Entity {
         name: Some("Pacman"),
         sprite: sprite::Sprite::new(&sprite_sheet, [0f64, 0f64, 28f64, 28f64]),
-        node: 0,
+        node: Some(0),
         map: pacman_map,
-        speed: Some([0f64;2]),
-        pos: None
+        direction: entity::Direction::Stop,
+        speed: 1.0,
+        pos: [17f64,57f64]
     };
-    pacman.pos = Some(pacman.map.nodes[0].pos);
-
+    pacman.change_node(0);
 
     let mut app = app::App {
         board: board,
         entities: vec![pacman],
+        player: 0,
+        ghosts: [1,2,3,4]
     };
 
     while let Some(e) = window.next() {
-        if let Some(mut args) = e.render_args() {
+        if let Some(args) = e.render_args() {
             app.render(args, &mut gl);
         }
-        if let Some(mut args) = e.update_args() {
+        if let Some(_args) = e.update_args() {
             //println!("{:#?}", args);
         }
-        if let Some(mut args) = e.button_args() {
+        if let Some(args) = e.button_args() {
             app.entities_update(args);
         }
         //println!("{:#?}", e);
-            app.update();
+        app.update();
     }
 }
