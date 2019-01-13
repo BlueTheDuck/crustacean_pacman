@@ -39,11 +39,13 @@ impl Map {
     pub fn new(nodes: Vec<Node>) -> Self {
         Map { nodes }
     }
+    //Pythagoras with self.nodes[node] and pos
     pub fn calc_distance(&self, node: usize, pos: [f64; 2]) -> f64 {
         let n = self.nodes[node];
         let deltas = [(n.pos[0] - pos[0]).abs(), (n.pos[1] - pos[1]).abs()];
         (deltas[0].powf(2.0) + deltas[1].powf(2.0)).sqrt()
     }
+    //Pythagoras with self.nodes[0..n] and pos. Returns index and distance
     pub fn get_nearest_node(&self, pos: [f64; 2]) -> (usize, f64) {
         if self.nodes.len() == 0 {
             panic!(
@@ -61,6 +63,7 @@ impl Map {
         }
         (index, shortest)
     }
+    //Debugging render. Shows nodes and their directions
     pub fn render(
         &self,
         gl: &mut opengl_graphics::GlGraphics,
@@ -128,7 +131,6 @@ impl std::convert::From<BufFile> for Map {
 impl std::convert::From<&PathBuf> for Map {
     fn from(file: &PathBuf) -> Self {
         let mut nodes: Vec<Node> = vec![];
-
         let mut reader = csv::Reader::from_path(file).expect("Couldn't open csv file");
         for result in reader.records() {
             let record: csv::StringRecord = result.expect("Error?");
