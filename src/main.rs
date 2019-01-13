@@ -10,6 +10,7 @@ use piston_window as pw;
 use piston_window::{ButtonEvent, RenderEvent, UpdateEvent};
 
 mod app;
+mod controls;
 mod entity;
 mod map;
 mod sprite;
@@ -30,32 +31,10 @@ fn main() {
         &pw::TextureSettings::new(),
     )
     .expect("Couldn't create sprite sheet");
+
     let board = GlTexture::from_path(&assets.join("board.png"), &pw::TextureSettings::new())
         .expect("Couldn't create board texture");
 
-    //let nodes: Vec<map::Node>; // = vec![map::Node::new([18f64, 55f64], 1)];
-
-    /*
-    let mut dots: Vec<map::Node> = vec![];
-    let dots_file = BufReader::new(File::open(assets.join("dots.txt")).expect("Couldn't read dots"));
-    for line in BufReader::new(dots_file).lines() {
-        let line:String = line.unwrap();
-        if line[0..1] == String::from("#") {
-            continue;
-        }
-        let mut props:Vec<Option<u64>> = vec![];
-        let line:Vec<&str> = line.split(",").collect();
-        for l in line {
-            let n = match l.parse::<u64>() {
-                Ok(v) => Some(v),
-                Err(_) => None,
-            };
-            props.push(n);
-        }
-        nodes.push(map::Node::from(props));
-    }*/
-
-    //let pacman_map = map::Map::new(nodes.clone());
     let pacman_map = map::Map::from(&assets.join("nodes.csv"));
 
     let mut pacman = entity::Entity {
@@ -74,6 +53,7 @@ fn main() {
         entities: vec![pacman],
         player: 0,
         ghosts: [1, 2, 3, 4],
+        controls: controls::Gamepad::new(),
         debug: true,
     };
 
@@ -86,7 +66,13 @@ fn main() {
             //println!("{:#?}", args);
         }
         if let Some(args) = e.button_args() {
-            app.entities_update(args);
+            match args.button {
+                piston_window::Button::Keyboard(key) => {
+                    app.controls.update(key, args.state);
+                }
+                _ => {}
+            }
+            //app.entities_update(args);
         }
         //println!("{:#?}", e);
     }

@@ -1,3 +1,4 @@
+use crate::controls::Gamepad;
 use crate::entity::Direction;
 use crate::entity::Entity;
 //use opengl_graphics::GlGraphics;
@@ -10,6 +11,7 @@ pub struct App<'a> {
     pub entities: Vec<Entity<'a>>,
     pub player: usize,
     pub ghosts: [usize; 4],
+    pub controls: Gamepad,
     pub debug: bool,
 }
 
@@ -36,13 +38,20 @@ impl<'a> App<'a> {
             );
 
             if self.debug {
-                e.map.render(gl, c,e.node);
+                e.map.render(gl, c, e.node);
             }
         }
 
         gl.draw_end();
     }
     pub fn update(&mut self) {
+        {
+            let dir = self.controls.get_one_direction();
+            if dir != Direction::Stop {
+                let player: &mut Entity = &mut self.entities[self.player];
+                player.change_direction(dir);
+            }
+        }
         for e in &mut self.entities {
             e.update_pos();
             let (node, distance) = e.map.get_nearest_node(e.pos);
@@ -50,7 +59,7 @@ impl<'a> App<'a> {
                 //println!("Found valid node");
                 let old_node = e.node;
                 e.change_node(node);
-                if old_node!=e.node {
+                if old_node != e.node {
                     println!(
                         "Updated node for {}. Now {}",
                         e.name.unwrap(),

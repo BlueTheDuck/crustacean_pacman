@@ -78,9 +78,12 @@ impl<'a> Entity<'a> {
         if new_dir == Direction::Stop {
             return true;
         }
+        if new_dir == self.direction {
+            return true;
+        }
         if let Some(node) = self.node {
             if self.map.nodes[node].neighs[new_dir as usize] == false {
-                self.direction = Direction::Stop;
+                //self.direction = Direction::Stop;
                 println!("Node {} forbids going in that direction",node);
                 return false;
             } else {
