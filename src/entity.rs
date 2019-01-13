@@ -88,17 +88,22 @@ impl<'a> Entity<'a> {
                 return false;
             } else {
                 self.direction = new_dir;
+                self.update_sprite();
                 return true;
             }
         } else {
             println!("No node is set");
             if new_dir==self.direction || new_dir==self.direction.opposite() {
                 self.direction = new_dir;
+                self.update_sprite();
                 return true;
             } else {
                 println!("Can only change between this and opposite directions");
                 return false;
             }
         }
+    }
+    fn update_sprite(&mut self) {
+        self.sprite.src_rect[0] = (28 * (self.direction as usize)) as f64;
     }
 }
