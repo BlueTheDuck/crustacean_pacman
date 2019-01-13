@@ -1,3 +1,4 @@
+use piston_window as pw;
 use piston_window::Context;
 use piston_window::Transformed;
 use std::path::PathBuf;
@@ -60,11 +61,41 @@ impl Map {
         }
         (index, shortest)
     }
-    pub fn render(&self, gl: &mut opengl_graphics::GlGraphics, c: Context) {
-        for n in &self.nodes {
+    pub fn render(
+        &self,
+        gl: &mut opengl_graphics::GlGraphics,
+        c: Context,
+        highlight: Option<usize>,
+    ) {
+        let colors: [[f32; 4]; 2] = [[1.0, 0.0, 0.0, 1.0], [1.0, 0.0, 1.0, 1.0]];
+        for i in 0..self.nodes.len() {
+            let n = self.nodes[i];
+            let color = colors[match highlight {
+                Some(h) => {
+                    if h == i {
+                        1
+                    } else {
+                        0
+                    }
+                }
+                None => 0,
+            }];
             let trans = c.transform.trans(n.pos[0], n.pos[1]);
-            let r = piston_window::ellipse::circle(0.0, 0.0, n.weight.unwrap_or(0) as f64);
-            piston_window::ellipse([1.0, 0.0, 0.0, 1.0], r, trans, gl);
+            let r = piston_window::ellipse::circle(0.0, 0.0, n.weight.unwrap_or(4) as f64);
+            piston_window::ellipse(color, r, trans, gl);
+            let offsets = [[0.0, -8f64], [8f64, 0.0], [0.0, 8f64], [-8f64, 0.0]];
+            for di in 0..4 {
+                let d = n.neighs[di];
+                if d {
+                    pw::line(
+                        color,
+                        2.0,
+                        [0.0, 0.0, offsets[di][0], offsets[di][1]],
+                        trans,
+                        gl,
+                    );
+                }
+            }
         }
     }
 }

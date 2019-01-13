@@ -88,10 +88,12 @@ impl<'a> Entity<'a> {
                 return true;
             }
         } else {
+            println!("No node is set");
             if new_dir==self.direction || new_dir==self.direction.opposite() {
                 self.direction = new_dir;
                 return true;
             } else {
+                println!("Can only change between this and opposite directions");
                 return false;
             }
         }

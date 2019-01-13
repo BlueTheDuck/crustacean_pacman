@@ -15,7 +15,7 @@ mod map;
 mod sprite;
 
 fn main() {
-    let mut window: pw::PistonWindow = pw::WindowSettings::new("Pac-Man", [288, 224])
+    let mut window: pw::PistonWindow = pw::WindowSettings::new("Pac-Man", [336, 448])
         .exit_on_esc(true)
         .build()
         .unwrap();
@@ -61,23 +61,25 @@ fn main() {
     let mut pacman = entity::Entity {
         name: Some("Pacman"),
         sprite: sprite::Sprite::new(&sprite_sheet, [0f64, 0f64, 28f64, 28f64]),
-        node: Some(0),
+        node: None,
         map: pacman_map,
-        direction: entity::Direction::Stop,
+        direction: entity::Direction::Left,
         speed: 1.0,
-        pos: [17f64,57f64]
+        pos: [17f64, 57f64],
     };
-    pacman.change_node(0);
+    pacman.change_node(1);
 
     let mut app = app::App {
         board: board,
         entities: vec![pacman],
         player: 0,
-        ghosts: [1,2,3,4]
+        ghosts: [1, 2, 3, 4],
+        debug: true,
     };
 
     while let Some(e) = window.next() {
         if let Some(args) = e.render_args() {
+            app.update();
             app.render(args, &mut gl);
         }
         if let Some(_args) = e.update_args() {
@@ -87,6 +89,5 @@ fn main() {
             app.entities_update(args);
         }
         //println!("{:#?}", e);
-        app.update();
     }
 }

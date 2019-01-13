@@ -10,6 +10,7 @@ pub struct App<'a> {
     pub entities: Vec<Entity<'a>>,
     pub player: usize,
     pub ghosts: [usize; 4],
+    pub debug: bool,
 }
 
 impl<'a> App<'a> {
@@ -33,7 +34,10 @@ impl<'a> App<'a> {
                 transform,
                 gl,
             );
-            e.map.render(gl, c);
+
+            if self.debug {
+                e.map.render(gl, c,e.node);
+            }
         }
 
         gl.draw_end();
@@ -42,16 +46,20 @@ impl<'a> App<'a> {
         for e in &mut self.entities {
             e.update_pos();
             let (node, distance) = e.map.get_nearest_node(e.pos);
-            if distance < 4.0 {
+            if distance < 3.0 {
+                //println!("Found valid node");
                 let old_node = e.node;
                 e.change_node(node);
-                if old_node != Some(node) {
+                if old_node!=e.node {
                     println!(
                         "Updated node for {}. Now {}",
                         e.name.unwrap(),
                         e.node.unwrap()
                     );
-                    println!("Changed node to {}. Valid directions now are {:#?}", node,e.map.nodes[node].neighs);
+                    println!(
+                        "Changed node to {}. Valid directions now are {:#?}",
+                        node, e.map.nodes[node].neighs
+                    );
                 }
             } else {
                 e.node = None;

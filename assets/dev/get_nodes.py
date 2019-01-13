@@ -13,23 +13,26 @@ def color_to_html(color):
 def is_bounding_pixel(origin, pixel):
     return (abs(pixel[0] - origin[0]) <= brush_size) and (abs(pixel[1] - origin[1]) <= brush_size)
 
-def check_linear_path(start,end,step):
-    pos = [0,0]
+
+def check_linear_path(start, end, step):
+    pos = [0, 0]
     subi = 1
-    if start[0]==end[0]:
+    if start[0] == end[0]:
         pos[0] = start[0]
         subi = 1
     else:
         pos[1] = start[1]
         subi = 0
-    #print("Testing range: {start[0]};{start[1]} - {end[0]};{end[1]}".format(start=start,end=end))
-    #print("Constant is {}".format(start[not subi]))
     for i in range(start[subi] + step*8, end[subi], step):
         pos[subi] = i
-        #print("Checking {}".format(pos))
-        if color_to_html(im.getpixel( (pos[0],pos[1]) )) == node:
+        pixel_color = im.getpixel((pos[0], pos[1]))
+        if pixel_color[2] > 0x0F and color_to_html(pixel_color)!=node:
+            print("({start[0]};{start[1]}) failed on ({pos[0]};{pos[1]})".format(start=start,pos=pos))
+            return False
+        if color_to_html(pixel_color)==node:
             return True
-    return False
+    return True
+
 
 wall = "#1E1EE4"
 node = "#FFFF00"
@@ -51,30 +54,30 @@ for y in range(0, im.height):
                     break
             if skip:
                 continue
-            print("Appending to list")
-            colored.append([x, y])
+            colored.append([int(x+(brush_size/2)), int(y+(brush_size/2))])
 
 print("List {}\nLen: {}".format(colored, colored.__len__()))
 
 for p in colored:
+    print("Testing node ({p[0]};{p[1]})".format(p=p))
     possible = [
-        check_linear_path(p,[p[0],0],-1),
-        check_linear_path(p,[im.width,p[1]],1),
-        check_linear_path(p,[p[0],im.height],1),
-        check_linear_path(p,[0,p[1]],-1)]
+        check_linear_path(p, [p[0], 0], -1),
+        check_linear_path(p, [im.width, p[1]], 1),
+        check_linear_path(p, [p[0], im.height], 1),
+        check_linear_path(p, [0, p[1]], -1)]
     colored_dirs.append(possible)
-
+print(colored_dirs)
 
 with open("../nodes.csv", "w") as file:
     writer = csv.DictWriter(
         file, fieldnames=["x", "y", "up", "right", "down", "left"])
     writer.writeheader()
-    for i in range(0,colored.__len__()):
+    for i in range(0, colored.__len__()):
         c = colored[i]
         cd = colored_dirs[i]
         writer.writerow({
-            "x": c[0]+(brush_size/2),
-            "y": c[1]+(brush_size/2),
+            "x": c[0],
+            "y": c[1],
             "up": cd[0],
             "right": cd[1],
             "down": cd[2],
