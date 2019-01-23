@@ -13,6 +13,7 @@ mod app;
 mod controls;
 mod entity;
 mod map;
+mod text_render;
 mod sprite;
 
 fn main() {
@@ -44,9 +45,9 @@ fn main() {
         map: pacman_map,
         direction: entity::Direction::Left,
         speed: 1.0,
-        pos: [17f64, 57f64],
+        pos: [150f64, 330f64],
     };
-    pacman.change_node(1);
+    pacman.change_node(64);
 
     let mut app = app::App {
         board: board,

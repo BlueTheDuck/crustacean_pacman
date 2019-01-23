@@ -59,12 +59,15 @@ impl<'a> Entity<'a> {
         self.pos = [pos[0] + speed_vec[0], pos[1] + speed_vec[1]];
     }
     pub fn change_node(&mut self, new_node: usize) {
+        if Some(new_node)==self.node {return};
         if new_node >= self.map.nodes.len() {
             panic!(
                 "Attempted to set new node as {}, when it doesn't exists on self.map",
                 new_node
             );
         }
+        self.pos = self.map.nodes[new_node].pos;
+        self.update_sprite();
         self.node = Some(new_node);
         if self.direction == Direction::Stop {
             return;
@@ -83,7 +86,6 @@ impl<'a> Entity<'a> {
         }
         if let Some(node) = self.node {
             if self.map.nodes[node].neighs[new_dir as usize] == false {
-                //self.direction = Direction::Stop;
                 println!("Node {} forbids going in that direction",node);
                 return false;
             } else {
