@@ -10,10 +10,10 @@ use piston_window as pw;
 use piston_window::{ButtonEvent, RenderEvent, UpdateEvent};
 
 mod app;
+mod render;
 mod controls;
 mod entity;
 mod map;
-mod text_render;
 mod sprite;
 
 fn main() {
@@ -28,6 +28,11 @@ fn main() {
         .expect("Unable to find folder 'assets'");
 
     let sprite_sheet = GlTexture::from_path(
+        &assets.join("sprite_sheet.png"),
+        &pw::TextureSettings::new(),
+    )
+    .expect("Couldn't create sprite sheet");
+    let typography = GlTexture::from_path(
         &assets.join("sprite_sheet.png"),
         &pw::TextureSettings::new(),
     )
