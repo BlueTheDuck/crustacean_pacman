@@ -5,8 +5,12 @@ authors = ["PeronTheDuck <pedroignacioperezvargas@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-piston_window = "0.85.0"
-piston2d-graphics = "0.28.0"
-piston2d-opengl_graphics = "0.57.0"
+piston_window = "0.87.0"
+piston2d-opengl_graphics = "0.59.0"
 find_folder = "0.3.0"
 csv = "1.0.5"
+freetype-rs = "0.19.1"
+
+[dependencies.piston2d-graphics]
+version = "0.30.0"
+features = ["glyph_cache_rusttype"]

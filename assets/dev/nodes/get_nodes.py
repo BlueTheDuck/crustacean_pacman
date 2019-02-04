@@ -14,6 +14,7 @@ def is_bounding_pixel(origin, pixel):
     return (abs(pixel[0] - origin[0]) <= brush_size) and (abs(pixel[1] - origin[1]) <= brush_size)
 
 
+
 def check_linear_path(start, end, step):
     pos = [0, 0]
     subi = 1

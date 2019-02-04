@@ -20,17 +20,6 @@ impl Node {
         }
     }
 }
-/* TOTALLY BROKEN! DON'T REMOVE COMMENT
-impl std::convert::From<Vec<Option<u64>>> for Node {
-    fn from(val: Vec<Option<u64>>) -> Self {
-        Self {
-            pos: [val[0].unwrap() as f64, val[1].unwrap() as f64],
-            score: val[2].unwrap(),
-            neighs: [val[3]!=Som1.0, val[4]!=1.0, val[5], val[6]],
-            weight: None,
-        }
-    }
-}*/
 
 pub struct Map {
     pub nodes: Vec<Node>,
@@ -103,31 +92,6 @@ impl Map {
     }
 }
 //#region convert::From
-/* TOTALLY BROKEN! DON'T REMOVE COMMENT
-impl std::convert::From<BufFile> for Map {
-    fn from(file: BufFile) -> Self {
-        use std::io::BufRead;
-
-        let mut nodes: Vec<Node> = vec![];
-        for line in file.lines() {
-            let line: String = line.unwrap();
-            if line[0..1] == String::from("#") {
-                continue;
-            }
-            let mut props: Vec<Option<u64>> = vec![];
-            let line: Vec<&str> = line.split(",").collect();
-            for l in line {
-                let n = match l.parse::<u64>() {
-                    Ok(v) => Some(v),
-                    Err(_) => None,
-                };
-                props.push(n);
-            }
-            nodes.push(Node::from(props));
-        }
-        Self { nodes }
-    }
-}*/
 impl std::convert::From<&PathBuf> for Map {
     fn from(file: &PathBuf) -> Self {
         let mut nodes: Vec<Node> = vec![];

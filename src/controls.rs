@@ -1,46 +1,46 @@
+use crate::entity::Direction;
 use piston_window::keyboard::Key;
 use piston_window::ButtonState;
-use crate::entity::Direction;
 
 pub struct Gamepad {
-    pub Up: bool,
-    pub Right: bool,
-    pub Down: bool,
-    pub Left: bool
+    pub up: bool,
+    pub right: bool,
+    pub down: bool,
+    pub left: bool,
 }
 impl Gamepad {
     pub fn new() -> Self {
         Gamepad {
-            Up: false,
-            Right: false,
-            Down: false,
-            Left: false
+            up: false,
+            right: false,
+            down: false,
+            left: false,
         }
     }
-    pub fn update(&mut self,key: Key,state: ButtonState) {
+    pub fn update(&mut self, key: Key, state: ButtonState) {
         let s = match state {
             ButtonState::Press => true,
             ButtonState::Release => false,
         };
         match key {
-            Key::Up    => self.Up = s,
-            Key::Right => self.Right = s,
-            Key::Down  => self.Down = s,
-            Key::Left  => self.Left = s,
+            Key::Up => self.up = s,
+            Key::Right => self.right = s,
+            Key::Down => self.down = s,
+            Key::Left => self.left = s,
             _ => {}
         }
     }
     pub fn get_one_direction(&self) -> Direction {
-        if self.Up {
+        if self.up {
             return Direction::Up;
         }
-        if self.Right {
+        if self.right {
             return Direction::Right;
         }
-        if self.Down {
+        if self.down {
             return Direction::Down;
         }
-        if self.Left {
+        if self.left {
             return Direction::Left;
         }
         return Direction::Stop;
