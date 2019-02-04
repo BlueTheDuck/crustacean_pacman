@@ -7,7 +7,7 @@ extern crate piston_window;
 
 use opengl_graphics::{GlGraphics, GlyphCache, Texture as GlTexture};
 use piston_window as pw;
-use piston_window::{ButtonEvent, RenderEvent, UpdateEvent, ResizeEvent};
+use piston_window::{ButtonEvent, RenderEvent, ResizeEvent, UpdateEvent};
 
 type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
@@ -23,7 +23,7 @@ fn main() {
         .exit_on_esc(true)
         .build()
         .unwrap();
-        
+
     let mut gl = GlGraphics::new(pw::OpenGL::V3_2);
 
     //#region Assets
@@ -39,9 +39,28 @@ fn main() {
 
     let font: Font =
         GlyphCache::new(assets.join("ARCADEPI.TTF"), (), pw::TextureSettings::new()).unwrap();
+    let font = std::cell::RefCell::new(font);
 
     let board = GlTexture::from_path(&assets.join("board.png"), &pw::TextureSettings::new())
         .expect("Couldn't create board texture");
+
+    let texts = {
+        let strings = vec!["1UP", "HIGH SCORE", "2UP", "999999", "9999999", "999999"];
+        let mut texts = vec![];
+        use piston_window::Window;
+        let size = window.size();
+        for i in 0..6 {
+            texts.push(render::Text::new(
+                strings[i].to_string(),
+                &font,
+                (
+                    size.width / 6.0 + size.width / 3.0 * (i % 3) as f64,
+                    12.0 * ((i / 3 + 1) as f64),
+                ),
+            ))
+        }
+        texts
+    };
     //#endregion
 
     let pacman_map = map::Map::from(&assets.join("nodes.csv"));
@@ -64,8 +83,8 @@ fn main() {
         ghosts: [1, 2, 3, 4],
         controls: controls::Gamepad::new(),
         debug: true,
-        font: font,
         score: [0; 3],
+        texts: texts,
     };
 
     while let Some(e) = window.next() {
@@ -85,8 +104,7 @@ fn main() {
             }
             //app.entities_update(args);
         }
-        if let Some(args) = e.resize_args() {
-        }
+        if let Some(args) = e.resize_args() {}
         //println!("{:#?}", e);
     }
 }

@@ -1,10 +1,11 @@
 use crate::controls::Gamepad;
 use crate::entity::Direction;
 use crate::entity::Entity;
-use crate::render::traits::Render;
+use crate::render::{traits::Render, Text};
 use opengl_graphics::{GlGraphics, Texture as GlTexture};
 use piston_window as pw;
 use piston_window::Transformed;
+use std::cell::RefCell;
 
 type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
@@ -15,8 +16,9 @@ pub struct App<'a> {
     pub ghosts: [usize; 4],
     pub controls: Gamepad,
     pub debug: bool,
-    pub font: Font,
+    //pub font: RefCell<Font>,
     pub score: [u32; 3],
+    pub texts: Vec<Text<'a, String>>,
 }
 
 impl<'a> App<'a> {
@@ -35,7 +37,11 @@ impl<'a> App<'a> {
             }
         }
 
-        const cs: f64 = 11.0;
+        for text in &self.texts {
+            text.draw(&mut gl, &c);
+        }
+
+        /*  const cs: f64 = 11.0;
         const w: f64 = 336.0; // Hardcoded width, TODO: Get value from window
         const wc: f64 = w / cs;
 
@@ -68,7 +74,7 @@ impl<'a> App<'a> {
                 )
                 .expect("Error displaying GUI string");
             }
-        }
+        } */
 
         gl.draw_end();
     }
@@ -102,6 +108,16 @@ impl<'a> App<'a> {
         }
 
         self.entities[self.player].sprite.next_frame();
+
+        for i in 0..1 {
+            if self.score[i * 2] > self.score[1] {
+                self.score[1] = self.score[i * 2];
+            }
+        }
+
+        for i in 0..3 {
+            self.texts[i + 3].text = self.score[i].to_string();
+        }
     }
     pub fn entities_update(&mut self, args: pw::ButtonArgs) {
         let player: &mut Entity = &mut self.entities[self.player];

@@ -8,6 +8,7 @@ if [ "$1" = "REBUILD_NODES" ]; then
     python3 ./get_nodes.py
     cd ../..
 fi
+rustfmt ./src/*.rs
 if [ "$1" = "RUN" ] || [ "$2" = "RUN" ]; then
     cargo run
 else
