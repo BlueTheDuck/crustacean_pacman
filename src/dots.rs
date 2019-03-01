@@ -1,20 +1,20 @@
-use crate::map::{position,pos,Map};
+use crate::map::{Position,Pos,Map};
 use std::path::PathBuf;
 
-struct Dot {
-    score: f64,
-    pos: pos
+pub struct Dot {
+    pub score: f64,
+    pos: Pos
 }
-impl position for Dot {
-    fn get_pos(&self) -> pos {
+impl Position for Dot {
+    fn get_pos(&self) -> Pos {
         return self.pos
     }
 }
 
 //#region convert::From
-impl std::convert::From<&PathBuf> for Map<Node> {
+impl std::convert::From<&PathBuf> for Map<Dot> {
     fn from(file: &PathBuf) -> Self {
-        let mut nodes: Vec<Node> = vec![];
+        let mut nodes: Vec<Dot> = vec![];
         let mut reader = csv::Reader::from_path(file).expect("Couldn't open csv file");
         for result in reader.records() {
             let record: csv::StringRecord = result.expect("Error?");
@@ -34,7 +34,7 @@ impl std::convert::From<&PathBuf> for Map<Node> {
                 .unwrap()
                 .parse::<f64>()
                 .expect("Couldn't parse record [1]");
-            nodes.push(Node {
+            nodes.push(Dot {
                 pos: [x, y],
                 score,
             })

@@ -1,20 +1,20 @@
-use crate::map::{position,pos,Map};
+use crate::map::{Position,Pos,Map};
 use std::path::PathBuf;
 
 #[derive(Copy, Clone)]
 pub struct Node {
-    pub pos: pos, //Center [X,Y]
+    pub pos: Pos, //Center [X,Y]
     pub score: u64,
     pub neighs: [bool; 4], //up,right,down,left
     pub weight: Option<u64>,
 }
-impl position for Node {
-    fn get_pos(&self) -> pos {
+impl Position for Node {
+    fn get_pos(&self) -> Pos {
         return self.pos
     }
 }
 impl Node {
-    pub fn new(pos: pos, weight: u64) -> Self {
+    pub fn new(pos: Pos, weight: u64) -> Self {
         Node {
             pos,
             score: 1,

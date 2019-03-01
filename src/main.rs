@@ -16,6 +16,7 @@ mod controls;
 mod entity;
 mod map;
 mod mov;
+mod dots;
 mod render;
 mod sprite;
 
@@ -64,6 +65,8 @@ fn main() {
     };
     //#endregion
 
+    let dots_map = map::Map::from(&assets.join("dots.csv"));
+
     let pacman_map = map::Map::from(&assets.join("nodes.csv"));
 
     let mut pacman = entity::Entity {
@@ -86,6 +89,7 @@ fn main() {
         debug: true,
         score: [0; 3],
         texts: texts,
+        dots: dots_map
     };
 
     while let Some(e) = window.next() {

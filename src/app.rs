@@ -2,6 +2,8 @@ use crate::controls::Gamepad;
 use crate::entity::Direction;
 use crate::entity::Entity;
 use crate::render::{traits::Render, Text};
+use crate::map::Map;
+use crate::dots::Dot;
 use opengl_graphics::{GlGraphics, Texture as GlTexture};
 use piston_window as pw;
 use piston_window::Transformed;
@@ -19,6 +21,7 @@ pub struct App<'a> {
     //pub font: RefCell<Font>,
     pub score: [u32; 3],
     pub texts: Vec<Text<'a, String>>,
+    pub dots: Map<Dot>
 }
 
 impl<'a> App<'a> {
@@ -28,6 +31,8 @@ impl<'a> App<'a> {
         let c = gl.draw_begin(args.viewport());
         let img = pw::Image::new();
         img.draw(&self.board, &pw::DrawState::default(), c.transform, gl);
+
+        self.dots.render(&mut gl, c);
 
         for e in &mut self.entities {
             e.draw(&mut gl, &c);
@@ -69,6 +74,13 @@ impl<'a> App<'a> {
                 }
             } else {
                 e.node = None;
+            }
+            if e.name == Some("Pacman") {
+                let nearest =  self.dots.get_nearest_node(e.pos);
+                if nearest.1 < 8.0 {
+                    let node = self.dots.nodes.remove(nearest.0);
+                    self.score[0] += node.score as u32;
+                }
             }
         }
 

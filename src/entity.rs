@@ -2,7 +2,7 @@ use crate::map::Map;
 use crate::render;
 use crate::sprite::Sprite;
 use crate::mov::Node as Node;
-use crate::map::position;
+use crate::map::Position;
 
 use piston_window as pw;
 
