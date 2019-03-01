@@ -9,8 +9,6 @@ use piston_window as pw;
 use piston_window::Transformed;
 use std::cell::RefCell;
 
-type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
-
 pub struct App<'a> {
     pub board: GlTexture,
     pub entities: Vec<Entity<'a>>,
