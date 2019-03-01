@@ -1,7 +1,7 @@
 use piston_window as pw;
 use piston_window::Context;
 use piston_window::Transformed;
-
+use crate::render::Render;
 
 pub type Pos = [f64;2];
 pub trait Position {
@@ -41,12 +41,10 @@ where T: Position {
         }
         (index, shortest)
     }
-    //Debugging render. Shows nodes and their directions
-    pub fn render(
-        &self,
-        gl: &mut opengl_graphics::GlGraphics,
-        c: Context,
-    ) {
+}
+impl<T> Render for Map<T>
+where T: Position {
+    fn draw(&self,gl: &mut opengl_graphics::GlGraphics, c: &pw::Context) {
         for n in &self.nodes {
             let p = n.get_pos();
             let trans = c.transform.trans(p[0], p[1]);

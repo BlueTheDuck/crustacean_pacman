@@ -1,9 +1,9 @@
 use crate::controls::Gamepad;
 use crate::entity::Direction;
 use crate::entity::Entity;
-use crate::render::{traits::Render, Text};
 use crate::map::Map;
 use crate::dots::Dot;
+use crate::render::{Render, Text};
 use opengl_graphics::{GlGraphics, Texture as GlTexture};
 use piston_window as pw;
 use piston_window::Transformed;
@@ -27,22 +27,7 @@ impl<'a> App<'a> {
         use piston_window as pw;
 
         let c = gl.draw_begin(args.viewport());
-        let img = pw::Image::new();
-        img.draw(&self.board, &pw::DrawState::default(), c.transform, gl);
-
-        self.dots.render(&mut gl, c);
-
-        for e in &mut self.entities {
-            e.draw(&mut gl, &c);
-
-            /* if self.debug {
-                e.map.render(gl, c, e.node);
-            } */
-        }
-
-        for text in &self.texts {
-            text.draw(&mut gl, &c);
-        }
+        self.draw(&mut gl, &c);
 
         gl.draw_end();
     }
@@ -110,6 +95,22 @@ impl<'a> App<'a> {
                     println!("Couldn't change direction");
                 }
             }
+        }
+    }
+}
+impl<'a> Render for App<'a> {
+    fn draw(&self,gl: &mut opengl_graphics::GlGraphics, c: &pw::Context) {
+        let img = pw::Image::new();
+        img.draw(&self.board, &pw::DrawState::default(), c.transform, gl);
+
+        self.dots.draw(gl, &c);
+
+        for e in &self.entities {
+            e.draw(gl, &c);
+        }
+
+        for text in &self.texts {
+            text.draw(gl, &c);
         }
     }
 }

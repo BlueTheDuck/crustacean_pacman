@@ -1,3 +1,4 @@
-pub mod text;
-mod trait;
-pub use trait::traits::Render;
+mod traits;
+mod text;
+pub use traits::Render;
+pub use text::{Font,Text};

@@ -1,5 +1,5 @@
 use crate::map::Map;
-use crate::render;
+use crate::render::Render;
 use crate::sprite::Sprite;
 use crate::mov::Node as Node;
 use crate::map::Position;
@@ -116,7 +116,7 @@ impl<'a> Entity<'a> {
         self.sprite.src_rect[0] = (28 * (self.direction as usize)) as f64;
     }
 }
-impl<'a> render::traits::Render for Entity<'a> {
+impl<'a> Render for Entity<'a> {
     fn draw(&self, gl: &mut opengl_graphics::GlGraphics, c: &pw::Context) {
         use pw::DrawState;
         use pw::Transformed;
