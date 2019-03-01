@@ -1,37 +1,26 @@
 use piston_window as pw;
 use piston_window::Context;
 use piston_window::Transformed;
-use std::path::PathBuf;
 
-#[derive(Copy, Clone)]
-pub struct Node {
-    pub pos: [f64; 2], //Center [X,Y]
-    pub score: u64,
-    pub neighs: [bool; 4], //up,right,down,left
-    pub weight: Option<u64>,
-}
-impl Node {
-    pub fn new(pos: [f64; 2], weight: u64) -> Self {
-        Node {
-            pos,
-            score: 1,
-            neighs: [true; 4],
-            weight: Some(weight),
-        }
-    }
+
+pub type pos = [f64;2];
+pub trait position {
+    fn get_pos(&self) -> pos;
 }
 
-pub struct Map {
-    pub nodes: Vec<Node>,
+pub struct Map<T>
+where T: position {
+    pub nodes: Vec<T>,
 }
-impl Map {
-    pub fn new(nodes: Vec<Node>) -> Self {
+impl<T> Map<T>
+where T: position {
+    pub fn new(nodes: Vec<T>) -> Self {
         Map { nodes }
     }
     //Pythagoras with self.nodes[node] and pos
     pub fn calc_distance(&self, node: usize, pos: [f64; 2]) -> f64 {
-        let n = self.nodes[node];
-        let deltas = [(n.pos[0] - pos[0]).abs(), (n.pos[1] - pos[1]).abs()];
+        let p = self.nodes[node].get_pos();
+        let deltas = [(p[0] - pos[0]).abs(), (p[1] - pos[1]).abs()];
         (deltas[0].powf(2.0) + deltas[1].powf(2.0)).sqrt()
     }
     //Pythagoras with self.nodes[0..n] and pos. Returns index and distance
@@ -59,7 +48,7 @@ impl Map {
         c: Context,
         highlight: Option<usize>,
     ) {
-        let colors: [[f32; 4]; 2] = [[1.0, 0.0, 0.0, 1.0], [1.0, 0.0, 1.0, 1.0]];
+        /* let colors: [[f32; 4]; 2] = [[1.0, 0.0, 0.0, 1.0], [1.0, 0.0, 1.0, 1.0]];
         for i in 0..self.nodes.len() {
             let n = self.nodes[i];
             let color = colors[match highlight {
@@ -72,6 +61,7 @@ impl Map {
                 }
                 None => 0,
             }];
+            let p = n.get_pos();
             let trans = c.transform.trans(n.pos[0], n.pos[1]);
             let r = piston_window::ellipse::circle(0.0, 0.0, n.weight.unwrap_or(4) as f64);
             piston_window::ellipse(color, r, trans, gl);
@@ -88,39 +78,6 @@ impl Map {
                     );
                 }
             }
-        }
+        } */
     }
 }
-//#region convert::From
-impl std::convert::From<&PathBuf> for Map {
-    fn from(file: &PathBuf) -> Self {
-        let mut nodes: Vec<Node> = vec![];
-        let mut reader = csv::Reader::from_path(file).expect("Couldn't open csv file");
-        for result in reader.records() {
-            let record: csv::StringRecord = result.expect("Error?");
-            //println!("{:#?}", record);
-            let x = record
-                .get(0)
-                .unwrap()
-                .parse::<f64>()
-                .expect("Couldn't parse record [0]");
-            let y = record
-                .get(1)
-                .unwrap()
-                .parse::<f64>()
-                .expect("Couldn't parse record [1]");
-            let mut neighs: [bool; 4] = [false; 4];
-            for i in 2..6 {
-                neighs[i - 2] = record.get(i).unwrap() == "True";
-            }
-            nodes.push(Node {
-                pos: [x, y],
-                neighs: neighs,
-                score: 0,
-                weight: None,
-            })
-        }
-        Self::new(nodes)
-    }
-}
-//#endregion

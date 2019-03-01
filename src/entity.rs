@@ -1,6 +1,8 @@
 use crate::map::Map;
 use crate::render;
 use crate::sprite::Sprite;
+use crate::mov::Node as Node;
+use crate::map::position;
 
 use piston_window as pw;
 
@@ -39,7 +41,7 @@ pub struct Entity<'a> {
     pub name: Option<&'a str>,
     pub sprite: Sprite<'a>,
     pub node: Option<usize>,
-    pub map: Map,
+    pub map: Map<Node>,
     pub direction: Direction,
     pub speed: f64,
     pub pos: [f64; 2],

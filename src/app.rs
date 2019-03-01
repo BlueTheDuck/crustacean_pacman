@@ -32,49 +32,14 @@ impl<'a> App<'a> {
         for e in &mut self.entities {
             e.draw(&mut gl, &c);
 
-            if self.debug {
+            /* if self.debug {
                 e.map.render(gl, c, e.node);
-            }
+            } */
         }
 
         for text in &self.texts {
             text.draw(&mut gl, &c);
         }
-
-        /*  const cs: f64 = 11.0;
-        const w: f64 = 336.0; // Hardcoded width, TODO: Get value from window
-        const wc: f64 = w / cs;
-
-        let texts: Vec<String> = vec![
-            "1UP".into(),
-            "HIGH SCORE".into(),
-            "2UP".into(),
-            String::from(self.score[0].to_string()),
-            String::from(self.score[1].to_string()),
-            String::from(self.score[2].to_string()),
-        ];
-        let text = pw::text::Text::new_color([1.0, 1.0, 1.0, 1.0], 12);
-        let y = cs;
-        let offset = 4.0;
-        for line in 0..2 {
-            for item in 0..3 {
-                use graphics::character::CharacterCache;
-                let li = line * 3 + item;
-                let item_width = self
-                    .font
-                    .width(cs as u32, texts[li].as_ref())
-                    .expect("Coudln't get width size of string");
-                let x = w / 6.0 + (w / 3.0 * item as f64) - item_width / 2.0;
-                text.draw(
-                    texts[li].as_ref(),
-                    &mut self.font,
-                    &pw::DrawState::default(),
-                    c.transform.trans(x, y + ((y + offset) * line as f64)),
-                    gl,
-                )
-                .expect("Error displaying GUI string");
-            }
-        } */
 
         gl.draw_end();
     }

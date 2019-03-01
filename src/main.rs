@@ -15,6 +15,7 @@ mod app;
 mod controls;
 mod entity;
 mod map;
+mod mov;
 mod render;
 mod sprite;
 
