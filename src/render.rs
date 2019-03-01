@@ -1,6 +1,9 @@
+pub type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
+
+
 pub mod text {
     use std::cell::{RefCell, RefMut};
-    type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
+    use super::Font;
     pub struct Text<'a, T>
     where
         T: AsRef<str>,
