@@ -1,8 +1,7 @@
 pub type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
-
 use std::cell::{RefCell, RefMut};
-use super::Font;
+
 pub struct Text<'a, T>
 where
     T: AsRef<str>,
@@ -41,6 +40,3 @@ where
         .expect("Couldn't draw text");
     }
 }
-}
-
-pub use self::text::Text;

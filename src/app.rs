@@ -1,7 +1,7 @@
 use crate::controls::Gamepad;
 use crate::entity::Direction;
 use crate::entity::Entity;
-use crate::render::{traits::Render, Text};
+use crate::render::{Render, Text};
 use opengl_graphics::{GlGraphics, Texture as GlTexture};
 use piston_window as pw;
 use piston_window::Transformed;
