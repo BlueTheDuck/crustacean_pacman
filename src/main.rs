@@ -13,10 +13,10 @@ type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_grap
 
 mod app;
 mod controls;
+mod dots;
 mod entity;
 mod map;
 mod mov;
-mod dots;
 mod render;
 mod sprite;
 
@@ -65,9 +65,13 @@ fn main() {
     };
     //#endregion
 
-    let dots_map = map::Map::from(&assets.join("dots.csv"));
+    let dots_map = {
+        let mut dots_map_temp = dots::DotMap::from(&assets.join("dots.csv"));
+        dots_map_temp.sprite = Some(sprite::Sprite::new(&sprite_sheet, [28f64 * 6.0, 0f64, 28f64, 28f64]));
+        dots_map_temp
+    };    
 
-    let pacman_map = map::Map::from(&assets.join("nodes.csv"));
+    let pacman_map = mov::NodeMap::from(&assets.join("nodes.csv"));
 
     let mut pacman = entity::Entity {
         name: Some("Pacman"),
@@ -89,7 +93,7 @@ fn main() {
         debug: true,
         score: [0; 3],
         texts: texts,
-        dots: dots_map
+        dots: dots_map,
     };
 
     while let Some(e) = window.next() {

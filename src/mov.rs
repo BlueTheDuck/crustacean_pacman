@@ -1,4 +1,4 @@
-use crate::map::{Position,Pos,Map};
+use crate::map::{Map, Pos, Position};
 use std::path::PathBuf;
 
 #[derive(Copy, Clone)]
@@ -10,7 +10,7 @@ pub struct Node {
 }
 impl Position for Node {
     fn get_pos(&self) -> Pos {
-        return self.pos
+        return self.pos;
     }
 }
 impl Node {
@@ -23,8 +23,18 @@ impl Node {
         }
     }
 }
+
+pub struct NodeMap {
+    pub nodes: Vec<Node>,
+}
+impl Map<Node> for NodeMap {
+    fn get_nodes(&self) -> &Vec<Node> {
+        return &self.nodes;
+    }
+}
+
 //#region convert::From
-impl std::convert::From<&PathBuf> for Map<Node> {
+impl std::convert::From<&PathBuf> for NodeMap {
     fn from(file: &PathBuf) -> Self {
         let mut nodes: Vec<Node> = vec![];
         let mut reader = csv::Reader::from_path(file).expect("Couldn't open csv file");
@@ -52,7 +62,7 @@ impl std::convert::From<&PathBuf> for Map<Node> {
                 weight: None,
             })
         }
-        Self::new(nodes)
+        Self { nodes }
     }
 }
 //#endregion

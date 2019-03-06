@@ -1,14 +1,32 @@
-use piston_window as pw;
-use piston_window::Context;
-use piston_window::Transformed;
-use crate::render::Render;
-
-pub type Pos = [f64;2];
+pub type Distance = f64;
+pub type Pos = [Distance; 2];
 pub trait Position {
     fn get_pos(&self) -> Pos;
 }
-
-pub struct Map<T>
+pub trait Map<Child>
+where
+    Child: Position,
+{
+    fn get_nodes(&self) -> &Vec<Child>;
+    fn calc_distance(&self, node: usize, pos: Pos) -> Distance {
+        let p = self.get_nodes()[node].get_pos();
+        let deltas = [(p[0] - pos[0]).abs(), (p[1] - pos[1]).abs()];
+        (deltas[0].powf(2.0) + deltas[1].powf(2.0)).sqrt()
+    }
+    fn get_nearest_node(&self, pos: Pos) -> (usize, Distance) {
+        let mut shortest: f64 = std::f64::MAX;
+        let mut index: usize = std::u128::MAX as usize; //Hack to get biggest usize
+        for i in 0..self.get_nodes().len() {
+            let distance = self.calc_distance(i, pos);
+            if distance < shortest {
+                shortest = distance;
+                index = i;
+            }
+        }
+        (index, shortest)
+    }
+}
+/* pub struct Map<T>
 where T: Position {
     pub nodes: Vec<T>,
 }
@@ -41,8 +59,8 @@ where T: Position {
         }
         (index, shortest)
     }
-}
-impl<T> Render for Map<T>
+} */
+/* impl<T> Render for Map<T>
 where T: Position {
     fn draw(&self,gl: &mut opengl_graphics::GlGraphics, c: &pw::Context) {
         for n in &self.nodes {
@@ -52,4 +70,4 @@ where T: Position {
             piston_window::ellipse([1.0, 0.0, 0.0, 1.0], r, trans, gl);
         }
     }
-}
+} */
