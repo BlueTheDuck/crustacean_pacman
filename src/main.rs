@@ -7,7 +7,7 @@ extern crate piston_window;
 
 use opengl_graphics::{GlGraphics, GlyphCache, Texture as GlTexture};
 use piston_window as pw;
-use piston_window::{ButtonEvent, RenderEvent, ResizeEvent, UpdateEvent};
+use piston_window::{ButtonEvent, RenderEvent, ResizeEvent, UpdateEvent, EventLoop};
 
 type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
@@ -25,6 +25,8 @@ fn main() {
         .exit_on_esc(true)
         .build()
         .unwrap();
+    window.set_max_fps(60);
+    window.set_ups(60);
 
     let mut gl = GlGraphics::new(pw::OpenGL::V3_2);
 
@@ -98,11 +100,10 @@ fn main() {
 
     while let Some(e) = window.next() {
         if let Some(args) = e.render_args() {
-            app.update();
             app.render(args, &mut gl);
         }
-        if let Some(_args) = e.update_args() {
-            //println!("{:#?}", args);
+        if let Some(args) = e.update_args() {
+            app.update();
         }
         if let Some(args) = e.button_args() {
             match args.button {
