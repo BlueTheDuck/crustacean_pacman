@@ -41,12 +41,8 @@ impl<'a> Render for DotMap<'a> {
                 .transform
                 .trans(pos[0] - src_rect[2] / 2.0, pos[1] - src_rect[3] / 2.0);
 
-            img.src_rect(src_rect).draw(
-                sprite.sprite_sheet,
-                &DrawState::default(),
-                transform,
-                gl,
-            );
+            img.src_rect(src_rect)
+                .draw(sprite.sprite_sheet, &DrawState::default(), transform, gl);
         }
     }
 }

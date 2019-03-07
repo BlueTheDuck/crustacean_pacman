@@ -7,7 +7,8 @@ extern crate piston_window;
 
 use opengl_graphics::{GlGraphics, GlyphCache, Texture as GlTexture};
 use piston_window as pw;
-use piston_window::{ButtonEvent, RenderEvent, ResizeEvent, UpdateEvent, EventLoop};
+use piston_window::{ButtonEvent, EventLoop, RenderEvent, ResizeEvent, UpdateEvent};
+use std::time::{Duration, Instant};
 
 type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
@@ -69,9 +70,12 @@ fn main() {
 
     let dots_map = {
         let mut dots_map_temp = dots::DotMap::from(&assets.join("dots.csv"));
-        dots_map_temp.sprite = Some(sprite::Sprite::new(&sprite_sheet, [28f64 * 6.0, 0f64, 28f64, 28f64]));
+        dots_map_temp.sprite = Some(sprite::Sprite::new(
+            &sprite_sheet,
+            [28f64 * 6.0, 0f64, 28f64, 28f64],
+        ));
         dots_map_temp
-    };    
+    };
 
     let pacman_map = mov::NodeMap::from(&assets.join("nodes.csv"));
 
@@ -81,10 +85,14 @@ fn main() {
         node: None,
         map: pacman_map,
         direction: entity::Direction::Left,
-        speed: 1.0,
+        speed: 1.4,
         pos: [150f64, 330f64],
     };
     pacman.change_node(64);
+    pacman.sprite.animation = sprite::AnimationType::SECS(
+        Duration::from_nanos((1.0 / 60.0 * 1e9) as u64),
+        Instant::now(),
+    );
 
     let mut app = app::App {
         board: board,

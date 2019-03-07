@@ -126,9 +126,13 @@ impl<'a> Render for Entity<'a> {
 
         src_rect[1] = src_rect[1] + src_rect[3] * frame as f64;
         let pos = self.pos;
+        let scale = 0.8;
+        let displacement = (1.0 - scale) * 28.0 / 2.0;
         let transform = c
             .transform
-            .trans(pos[0] - src_rect[2] / 2.0, pos[1] - src_rect[3] / 2.0);
+            .trans(pos[0] - src_rect[2] / 2.0, pos[1] - src_rect[3] / 2.0)
+            .trans(displacement, displacement)
+            .scale(scale, scale);
 
         img.src_rect(src_rect).draw(
             self.sprite.sprite_sheet,

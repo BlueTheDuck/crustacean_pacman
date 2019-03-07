@@ -65,7 +65,7 @@ impl<'a> App<'a> {
             }
         }
 
-        self.entities[self.player].sprite.next_frame();
+        self.entities[self.player].sprite.animate();
 
         for i in 0..1 {
             if self.score[i * 2] > self.score[1] {
