@@ -46,7 +46,7 @@ draw = ImageDraw.Draw(im)
 im2 = Image.new("RGB", (width, height))
 
 print("{w}x{h}".format(w=width, h=height))
-""" for i in tqdm(range(0, pixelcount), desc="Checking program status"):
+for i in tqdm(range(0, pixelcount), desc="Checking program status"):
     (x, y) = as_coord(i)
     j = as_index(x, y)
     try:
@@ -55,7 +55,7 @@ print("{w}x{h}".format(w=width, h=height))
     except AssertionError:
         print("\n\t({x: 04},{y: 04}) = as_coord({i: 8})\nas_index({x: 04},{y: 04}) =        {j: 10}\n0 <= {x: 4} < {w}\n0 <= {y: 4} < {h}".format(
             x=x, y=y, j=j, i=i, w=width, h=height))
-        exit(-1) """
+        exit(-1)
 
 
 """ Preprocess: RGB > Boolean """
@@ -63,8 +63,8 @@ for i in tqdm(range(0, pixelcount), desc="Converting to bitmap"):
     (x, y) = as_coord(i)
     pixel = im.getpixel((x, y))
     bitmap[i] = (color_to_html(pixel) == colors["node"])
-    """ if bitmap[i]:
-        im2.putpixel((x, y), html_to_color(colors["node"])) """
+    if bitmap[i]:
+        im2.putpixel((x, y), html_to_color(colors["node"]))
 
 """ Analyze bitmap: True+True+True > True+False+False """
 for j in tqdm(range(0, pixelcount), desc="Analyzing bitmap"):
@@ -72,24 +72,24 @@ for j in tqdm(range(0, pixelcount), desc="Analyzing bitmap"):
     (x, y) = as_coord(i)
     if x > 0 and bitmap[as_index(x-1, y)] == True:
         bitmap[as_index(x, y)] = False
-        """ im2.putpixel((x, y), html_to_color(colors["black"])) """
+        im2.putpixel((x, y), html_to_color(colors["black"]))
     if y > 0 and bitmap[as_index(x, y-1)] == True:
         bitmap[as_index(x, y)] = False
-        """ im2.putpixel((x, y), html_to_color(colors["black"])) """
+        im2.putpixel((x, y), html_to_color(colors["black"]))
 
 """ Fix bitmap positions: True+False+False > False+True+False """
-for j in tqdm(range(0, pixelcount), desc="Fixing positions"):
+""" for j in tqdm(range(0, pixelcount), desc="Fixing positions"):
     i = pixelcount - j
     (x, y) = as_coord(i)
     if bitmap[as_index(x, y)] == True:
         bitmap[as_index(x, y)] = False
-        bitmap[as_index(x+3, y+3)] = True
-        """ im2.putpixel((x, y), (0xFF, 0xFF, 0x0))
-        try:
-            im2.putpixel((x+3, y+3), (0x00, 0xFF, 0x0))
-        except IndexError:
-            None """
-
+        bitmap[as_index(x+3, y+3)] = True """
+""" im2.putpixel((x, y), (0xFF, 0xFF, 0x0))
+   try:
+        im2.putpixel((x+3, y+3), (0x00, 0xFF, 0x0))
+    except IndexError:
+        None """
+im2.show()
 with open("../dots.csv", "w") as file:
     writer = csv.DictWriter(
         file, fieldnames=["x", "y", "score"])
