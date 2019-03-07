@@ -101,5 +101,5 @@ with open("../dots.csv", "w") as file:
             writer.writerow({
                 "x": x,
                 "y": y,
-                "score": 1,
+                "score": 10,
             })
