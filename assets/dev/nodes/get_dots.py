@@ -40,7 +40,7 @@ im = Image.open("./board+dots.png")
 width = im.width
 height = im.height
 pixelcount = width * height
-bitmap = [False]*(height * height)
+bitmap = [False]*(pixelcount)
 draw = ImageDraw.Draw(im)
 
 im2 = Image.new("RGB", (width, height))
@@ -85,7 +85,7 @@ for j in tqdm(range(0, pixelcount), desc="Analyzing bitmap"):
         bitmap[as_index(x, y)] = False
         bitmap[as_index(x+3, y+3)] = True """
 """ im2.putpixel((x, y), (0xFF, 0xFF, 0x0))
-   try:
+    try:
         im2.putpixel((x+3, y+3), (0x00, 0xFF, 0x0))
     except IndexError:
         None """
