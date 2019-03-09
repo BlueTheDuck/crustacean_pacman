@@ -2,7 +2,6 @@ use crate::map::{Map, Pos, Position};
 use crate::render::Render;
 use crate::sprite::Sprite;
 use piston_window as pw;
-use piston_window::Context;
 use piston_window::Transformed;
 use std::path::PathBuf;
 

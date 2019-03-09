@@ -1,5 +1,4 @@
-use crate::map::Position;
-use crate::mov::{Node, NodeMap};
+use crate::mov::NodeMap;
 use crate::render::Render;
 use crate::sprite::Sprite;
 

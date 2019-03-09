@@ -21,6 +21,8 @@ mod mov;
 mod render;
 mod sprite;
 
+
+#[allow(unused_variables)]
 fn main() {
     let mut window: pw::PistonWindow = pw::WindowSettings::new("Pac-Man", [336, 448])
         .exit_on_esc(true)

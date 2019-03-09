@@ -1,14 +1,11 @@
 use crate::controls::Gamepad;
-use crate::dots::{Dot, DotMap};
+use crate::dots::DotMap;
 use crate::entity::Direction;
 use crate::entity::Entity;
 use crate::map::Map;
 use crate::render::{Render, Text};
-use crate::sprite::Sprite;
 use opengl_graphics::{GlGraphics, Texture as GlTexture};
 use piston_window as pw;
-use piston_window::Transformed;
-use std::cell::RefCell;
 
 pub struct App<'a> {
     pub board: GlTexture,
@@ -17,7 +14,6 @@ pub struct App<'a> {
     pub ghosts: [usize; 4],
     pub controls: Gamepad,
     pub debug: bool,
-    //pub font: RefCell<Font>,
     pub score: [u32; 3],
     pub texts: Vec<Text<'a, String>>,
     pub dots: DotMap<'a>,
@@ -77,7 +73,7 @@ impl<'a> App<'a> {
             self.texts[i + 3].text = self.score[i].to_string();
         }
     }
-    pub fn entities_update(&mut self, args: pw::ButtonArgs) {
+    /* pub fn entities_update(&mut self, args: pw::ButtonArgs) {
         let player: &mut Entity = &mut self.entities[self.player];
         if args.state == pw::ButtonState::Press {
             if let pw::Button::Keyboard(key) = args.button {
@@ -94,7 +90,7 @@ impl<'a> App<'a> {
                 }
             }
         }
-    }
+    } */
 }
 impl<'a> Render for App<'a> {
     fn draw(&self, gl: &mut opengl_graphics::GlGraphics, c: &pw::Context) {
