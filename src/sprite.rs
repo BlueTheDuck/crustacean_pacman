@@ -1,6 +1,7 @@
 use opengl_graphics::Texture as GlTexture;
 use std::time::{Duration, Instant};
 
+#[allow(dead_code)]
 pub enum AnimationType {
     SECS(Duration, Instant), //Time to complete on cicle // Last time frame was updated
     FRAMECOUNT(usize),
