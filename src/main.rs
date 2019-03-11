@@ -74,7 +74,7 @@ fn main() {
         let mut dots_map_temp = dots::DotMap::from(&assets.join("dots.csv"));
         dots_map_temp.sprite = Some(sprite::Sprite::new(
             &sprite_sheet,
-            [SPRITE_SIZE * 6.0, 0f64],
+            [SPRITE_SIZE * 7.0, 0f64],
         ));
         dots_map_temp
     };
