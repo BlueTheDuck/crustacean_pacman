@@ -1,7 +1,7 @@
 use crate::map::{Map, Pos, Position};
 use std::path::PathBuf;
 
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub struct Node {
     pub pos: Pos, //Center [X,Y]
     pub score: u64,
@@ -25,6 +25,7 @@ impl Node {
     }
 }
 
+#[derive(Clone)]
 pub struct NodeMap {
     pub nodes: Vec<Node>,
 }

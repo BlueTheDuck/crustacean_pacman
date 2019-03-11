@@ -1,6 +1,6 @@
 use crate::mov::NodeMap;
 use crate::render::Render;
-use crate::sprite::Sprite;
+use crate::sprite::{units::DEFAULT_SPRITE_SIZE as SPRITE_SIZE,Sprite};
 
 use piston_window as pw;
 
@@ -111,7 +111,7 @@ impl<'a> Entity<'a> {
         }
     }
     fn update_sprite(&mut self) {
-        self.sprite.src_rect[0] = (28 * (self.direction as usize)) as f64;
+        self.sprite.src_rect[0] = (SPRITE_SIZE * (self.direction as usize as f64)) as f64;
     }
 }
 impl<'a> Render for Entity<'a> {
@@ -123,13 +123,13 @@ impl<'a> Render for Entity<'a> {
         let mut src_rect = self.sprite.src_rect;
         let frame = self.sprite.frame;
 
-        src_rect[1] = src_rect[1] + src_rect[3] * frame as f64;
+        src_rect[1] = src_rect[1] + SPRITE_SIZE * frame as f64;
         let pos = self.pos;
-        let scale = 0.8;
-        let displacement = (1.0 - scale) * 28.0 / 2.0;
+        let scale = /* 0.8 */1.0;
+        let displacement = 0.0 /* (1.0 - scale) * SPRITE_SIZE / 2.0 */;
         let transform = c
             .transform
-            .trans(pos[0] - src_rect[2] / 2.0, pos[1] - src_rect[3] / 2.0)
+            .trans(pos[0] - SPRITE_SIZE / 2.0, pos[1] - SPRITE_SIZE / 2.0)
             .trans(displacement, displacement)
             .scale(scale, scale);
 

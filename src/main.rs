@@ -9,6 +9,7 @@ use opengl_graphics::{GlGraphics, GlyphCache, Texture as GlTexture};
 use piston_window as pw;
 use piston_window::{ButtonEvent, EventLoop, RenderEvent, ResizeEvent, UpdateEvent};
 use std::time::{Duration, Instant};
+use sprite::units::DEFAULT_SPRITE_SIZE as SPRITE_SIZE;
 
 type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
@@ -20,7 +21,6 @@ mod map;
 mod mov;
 mod render;
 mod sprite;
-
 
 #[allow(unused_variables)]
 fn main() {
@@ -74,18 +74,18 @@ fn main() {
         let mut dots_map_temp = dots::DotMap::from(&assets.join("dots.csv"));
         dots_map_temp.sprite = Some(sprite::Sprite::new(
             &sprite_sheet,
-            [28f64 * 6.0, 0f64, 28f64, 28f64],
+            [SPRITE_SIZE * 6.0, 0f64],
         ));
         dots_map_temp
     };
 
-    let pacman_map = mov::NodeMap::from(&assets.join("nodes.csv"));
+    let node_map = mov::NodeMap::from(&assets.join("nodes.csv"));
 
     let mut pacman = entity::Entity {
         name: Some("Pacman"),
-        sprite: sprite::Sprite::new(&sprite_sheet, [0f64, 0f64, 28f64, 28f64]),
+        sprite: sprite::Sprite::new(&sprite_sheet, [0f64, 0f64]),
         node: None,
-        map: pacman_map,
+        map: node_map.clone(),
         direction: entity::Direction::Left,
         speed: 1.4,
         pos: [150f64, 330f64],
@@ -96,9 +96,24 @@ fn main() {
         Instant::now(),
     );
 
+    let mut red = entity::Entity {
+        name: Some("Red"),
+        sprite: sprite::Sprite::new(&sprite_sheet, [0.0, SPRITE_SIZE * 4.0]),
+        node: None,
+        map: node_map.clone(),
+        direction: entity::Direction::Left,
+        speed: 1.1,
+        pos: [150f64, 330f64],
+    };
+    red.change_node(3);
+    /* red.sprite.animation = sprite::AnimationType::SECS(
+        Duration::from_nanos((1.0 / 60.0 * 1e9) as u64),
+        Instant::now(),
+    ); */
+
     let mut app = app::App {
         board: board,
-        entities: vec![pacman],
+        entities: vec![pacman, red],
         player: 0,
         ghosts: [1, 2, 3, 4],
         controls: controls::Gamepad::new(),
