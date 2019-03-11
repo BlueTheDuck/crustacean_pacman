@@ -14,6 +14,7 @@ impl Position for Node {
     }
 }
 impl Node {
+    #[allow(dead_code)]
     pub fn new(pos: Pos, weight: u64) -> Self {
         Node {
             pos,
