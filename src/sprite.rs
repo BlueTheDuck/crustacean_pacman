@@ -1,6 +1,11 @@
 use opengl_graphics::Texture as GlTexture;
 use std::time::{Duration, Instant};
 
+pub mod units {
+    pub const ONE_FRAME_IN_NANOS: f64 = (1.0 / 60.0) * 1e9;
+    pub const DEFAULT_SPRITE_SIZE: f64 = 24.0;
+}
+
 #[allow(dead_code)]
 pub enum AnimationType {
     SECS(Duration, Instant), //Time to complete on cicle // Last time frame was updated
@@ -17,12 +22,17 @@ pub struct Sprite<'a> {
 }
 
 impl<'a> Sprite<'a> {
-    pub fn new(sprite_sheet: &'a GlTexture, src_rect: [f64; 4]) -> Self {
+    pub fn new(sprite_sheet: &'a GlTexture, src_rect_pos: [f64; 2]) -> Self {
         Sprite {
             sprite_sheet,
             frame_count: 4,
             frame: 0,
-            src_rect,
+            src_rect: [
+                src_rect_pos[0],
+                src_rect_pos[1],
+                units::DEFAULT_SPRITE_SIZE,
+                units::DEFAULT_SPRITE_SIZE,
+            ],
             animation: AnimationType::NONE,
         }
     }
@@ -46,5 +56,4 @@ impl<'a> Sprite<'a> {
             _ => {}
         }
     }
-    
 }
