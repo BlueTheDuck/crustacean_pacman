@@ -1,6 +1,6 @@
 use crate::mov::NodeMap;
 use crate::render::Render;
-use crate::sprite::{units::DEFAULT_SPRITE_SIZE as SPRITE_SIZE,Sprite};
+use crate::sprite::{units::DEFAULT_SPRITE_SIZE as SPRITE_SIZE, Sprite};
 
 use piston_window as pw;
 
@@ -30,8 +30,36 @@ impl std::convert::Into<usize> for Direction {
             Direction::Right => 1,
             Direction::Down => 2,
             Direction::Left => 3,
-            Direction::Stop => 5,
+            Direction::Stop => 4,
         }
+    }
+}
+impl std::convert::From<usize> for Direction {
+    fn from(n: usize) -> Self {
+        let n = n % 5;
+        match n {
+            0 => Direction::Up,
+            1 => Direction::Right,
+            2 => Direction::Down,
+            3 => Direction::Left,
+            4 => Direction::Stop,
+            _ => Direction::Stop,
+        }
+    }
+}
+impl std::fmt::Display for Direction {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+        write!(
+            fmt,
+            "{}",
+            match self {
+                Direction::Up => "Up",
+                Direction::Right => "Right",
+                Direction::Down => "Down",
+                Direction::Left => "Left",
+                Direction::Stop => "Stop",
+            }
+        )
     }
 }
 
@@ -62,6 +90,7 @@ impl<'a> Entity<'a> {
         self.pos = [pos[0] + speed_vec[0], pos[1] + speed_vec[1]];
     }
     pub fn change_node(&mut self, new_node: usize) {
+        println!("Setting node {} for {}", new_node, self.name.unwrap());
         if Some(new_node) == self.node {
             return;
         };
