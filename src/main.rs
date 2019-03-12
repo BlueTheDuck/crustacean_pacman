@@ -8,8 +8,8 @@ extern crate piston_window;
 use opengl_graphics::{GlGraphics, GlyphCache, Texture as GlTexture};
 use piston_window as pw;
 use piston_window::{ButtonEvent, EventLoop, RenderEvent, ResizeEvent, UpdateEvent};
-use std::time::{Duration, Instant};
 use sprite::units::DEFAULT_SPRITE_SIZE as SPRITE_SIZE;
+use std::time::{Duration, Instant};
 
 type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
@@ -106,10 +106,10 @@ fn main() {
         pos: [150f64, 330f64],
     };
     red.change_node(3);
-    /* red.sprite.animation = sprite::AnimationType::SECS(
+    red.sprite.animation = sprite::AnimationType::SECS(
         Duration::from_nanos((1.0 / 60.0 * 1e9) as u64),
         Instant::now(),
-    ); */
+    );
 
     let mut app = app::App {
         board: board,

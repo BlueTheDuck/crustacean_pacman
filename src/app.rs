@@ -59,38 +59,58 @@ impl<'a> App<'a> {
                     self.score[0] += node.score as u32;
                 }
             }
-        }
-
-        self.entities[self.player].sprite.animate();
-
-        for i in 0..1 {
-            if self.score[i * 2] > self.score[1] {
-                self.score[1] = self.score[i * 2];
-            }
-        }
-
-        for i in 0..3 {
-            self.texts[i + 3].text = self.score[i].to_string();
-        }
-    }
-    /* pub fn entities_update(&mut self, args: pw::ButtonArgs) {
-        let player: &mut Entity = &mut self.entities[self.player];
-        if args.state == pw::ButtonState::Press {
-            if let pw::Button::Keyboard(key) = args.button {
-                println!("Changing direction to {:#?}", key);
-                let could = player.change_direction(match key {
-                    pw::keyboard::Key::Up => Direction::Up,
-                    pw::keyboard::Key::Right => Direction::Right,
-                    pw::keyboard::Key::Down => Direction::Down,
-                    pw::keyboard::Key::Left => Direction::Left,
-                    _ => Direction::Stop,
-                });
-                if !could {
-                    println!("Couldn't change direction");
+            if e.name == Some("Red") {
+                use crate::entity::Direction;
+                if e.direction == Direction::Stop {
+                    let d: usize = e.direction.into();
+                    for o in [1, 2, 3].iter() {
+                        let nd = (d + o) % 4;
+                        if e.change_direction(crate::entity::Direction::from(nd)) == true {
+                            if *o != 0 as usize {
+                                println!("Now going {}", crate::entity::Direction::from(nd));
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }
-    } */
+
+        for i in &[0, 2] {
+            if self.score[*i] > self.score[1] {
+                self.score[1] = self.score[*i];
+            }
+        }
+        for i in 0..3 {
+            self.texts[i + 3].text = self.score[i].to_string();
+        }
+
+        self.entities_update();
+    }
+    pub fn entities_update(&mut self) {
+        // Actual AI
+        use crate::map::{Pos, Position};
+        let pacman_node_pos: Pos = {
+            let pacman = &self.entities[self.player];
+            match pacman.node {
+                Some(id) => self.entities[self.player].map.get_nodes()[id].get_pos(),
+                None => pacman.pos,
+            }
+            /* let id = pacman.node.unwrap();
+            self.entities[self.player].map.get_nodes()[id].get_pos() */
+        };
+        let gi = 0;
+        let ghost: &mut Entity = &mut self.entities[self.ghosts[gi]];
+        let ghost_node_pos = {
+            let id = ghost.node.unwrap();
+            /* ghost.map.get_nodes()[id].get_pos() */
+        };
+        /* if ghost_node_pos[0] == pacman_node_pos[0] || ghost_node_pos[1] == pacman_node_pos[1] {
+            println!("{}: I SEE PACMAN", ghost.name.unwrap());
+        } */
+
+        self.entities[self.player].sprite.animate();
+    }
 }
 impl<'a> Render for App<'a> {
     fn draw(&self, gl: &mut opengl_graphics::GlGraphics, c: &pw::Context) {
