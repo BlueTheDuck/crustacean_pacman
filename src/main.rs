@@ -5,22 +5,25 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston_window;
 
+mod app;
+mod controls;
+mod dots;
+mod entity;
+mod ai;
+mod map;
+mod mov;
+mod render;
+mod sprite;
+
 use opengl_graphics::{GlGraphics, GlyphCache, Texture as GlTexture};
 use piston_window as pw;
 use piston_window::{ButtonEvent, EventLoop, RenderEvent, ResizeEvent, UpdateEvent};
 use sprite::units::DEFAULT_SPRITE_SIZE as SPRITE_SIZE;
 use std::time::{Duration, Instant};
+use ai::AI;
 
 type Font = graphics::glyph_cache::rusttype::GlyphCache<'static, (), opengl_graphics::Texture>;
 
-mod app;
-mod controls;
-mod dots;
-mod entity;
-mod map;
-mod mov;
-mod render;
-mod sprite;
 
 #[allow(unused_variables)]
 fn main() {
@@ -89,7 +92,9 @@ fn main() {
         direction: entity::Direction::Left,
         speed: 1.4,
         pos: [150f64, 330f64],
+        ai_type: AI::PLAYER,
     };
+    
     pacman.change_node(64);
     pacman.sprite.animation = sprite::AnimationType::SECS(
         Duration::from_nanos(sprite::units::ONE_FRAME_IN_NANOS),
@@ -104,6 +109,7 @@ fn main() {
         direction: entity::Direction::Left,
         speed: 1.1,
         pos: [150f64, 330f64],
+        ai_type: AI::RED,
     };
     red.change_node(3);
     red.sprite.animation = sprite::AnimationType::SECS(

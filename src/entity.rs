@@ -1,9 +1,11 @@
 use crate::mov::NodeMap;
 use crate::render::Render;
 use crate::sprite::{units::DEFAULT_SPRITE_SIZE as SPRITE_SIZE, Sprite};
+use crate::ai::AI;
 
 use piston_window as pw;
 
+//#region Direciton
 #[derive(Clone, Copy, PartialEq)]
 pub enum Direction {
     Up,
@@ -62,6 +64,7 @@ impl std::fmt::Display for Direction {
         )
     }
 }
+//#endregion
 
 pub struct Entity<'a> {
     pub name: Option<&'a str>,
@@ -71,6 +74,7 @@ pub struct Entity<'a> {
     pub direction: Direction,
     pub speed: f64,
     pub pos: [f64; 2],
+    pub ai_type: AI,
 }
 impl<'a> Entity<'a> {
     fn get_speed_vector(&self) -> [f64; 2] {
