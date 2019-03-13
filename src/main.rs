@@ -92,7 +92,7 @@ fn main() {
     };
     pacman.change_node(64);
     pacman.sprite.animation = sprite::AnimationType::SECS(
-        Duration::from_nanos((1.0 / 60.0 * 1e9) as u64),
+        Duration::from_nanos(sprite::units::ONE_FRAME_IN_NANOS),
         Instant::now(),
     );
 
