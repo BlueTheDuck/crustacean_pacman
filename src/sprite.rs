@@ -2,7 +2,7 @@ use opengl_graphics::Texture as GlTexture;
 use std::time::{Duration, Instant};
 
 pub mod units {
-    pub const ONE_FRAME_IN_NANOS: f64 = (1.0 / 60.0) * 1e9;
+    pub const ONE_FRAME_IN_NANOS: u64 = (1.0 / 60.0) * 1e9;
     pub const DEFAULT_SPRITE_SIZE: f64 = 24.0;
 }
 
