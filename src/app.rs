@@ -90,7 +90,7 @@ impl<'a> App<'a> {
     pub fn entities_update(&mut self) {
         // Actual AI
         use crate::map::{Pos, Position};
-        let pacman_node_pos: Pos = {
+        let pacman_pos: Pos = {
             let pacman = &self.entities[self.player];
             match pacman.node {
                 Some(id) => self.entities[self.player].map.get_nodes()[id].get_pos(),
@@ -101,11 +101,20 @@ impl<'a> App<'a> {
         };
         let gi = 0;
         let ghost: &mut Entity = &mut self.entities[self.ghosts[gi]];
-        let ghost_node_pos = {
-            let id = ghost.node.unwrap();
+        let ghost_pos = {
+            match ghost.node {
+                Some(id) => ghost.map.get_nodes()[id].get_pos(),
+                None => ghost.pos,
+            }
             /* ghost.map.get_nodes()[id].get_pos() */
         };
-        /* if ghost_node_pos[0] == pacman_node_pos[0] || ghost_node_pos[1] == pacman_node_pos[1] {
+        let distance = [(ghost_pos[0] - pacman_pos[0]).abs(),(ghost_pos[1] - pacman_pos[1]).abs()];
+        if distance[0] < 8.0 || distance[1] < 8.0 {
+            println!("I SEE PACMAN!");
+            panic!("Pacman has been found");
+        }
+        /* println!("Pacman.pos = [{};{}]\nRed.Pos = [{};{}]", pacman_pos[0],pacman_pos[1],ghost_pos[0],ghost_pos[1]); */
+        /* if ghost_node_pos[0] == pacman_pos[0] || ghost_node_pos[1] == pacman_pos[1] {
             println!("{}: I SEE PACMAN", ghost.name.unwrap());
         } */
 

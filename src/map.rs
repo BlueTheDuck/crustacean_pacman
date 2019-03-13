@@ -1,5 +1,6 @@
 pub type Distance = f64;
 pub type Pos = [Distance; 2];
+
 pub trait Position {
     fn get_pos(&self) -> Pos;
 }
