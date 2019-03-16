@@ -77,6 +77,7 @@ def check_linear_path(start, end, step):
 
 
 def in_range(n1, n2):
+    print("In range {} / {}".format(n1, n2))
     return (n1 + brush_size / 2) > n2 and (n1 - brush_size / 2) < n2
 
 
@@ -97,7 +98,7 @@ height = im.height
 pixelcount = width * height
 
 bitmap = [False]*(pixelcount)
-nodes = []
+nodes = [node((-1, -1))] * 90
 
 im2 = Image.new("RGB", (width, height))
 draw = ImageDraw.Draw(im2)
@@ -123,11 +124,14 @@ for j in tqdm(range(0, pixelcount), desc="Analyzing and deduplicating bitmap"):
         bitmap[as_index(x, y)] = False
         draw.point((x, y), html_to_color(colors["black"]))
 
+last_node = 0
 for i in tqdm(range(0, pixelcount), desc="Discovering nodes"):
     if bitmap[i] == True:
-        nodes.append(node(as_coord(i)))
+        """ nodes.append(node(as_coord(i))) """
+        nodes[last_node] = node(as_coord(i))
         draw.point(as_coord(i), html_to_color(colors["yellow"]))
-        draw.text(as_coord(i), "{}".format(nodes.__len__()-1))
+        draw.text(as_coord(i), "{}".format(last_node))
+        last_node += 1
         # nodes[nodes.__len__()-1].pos.__str__()
 
 for i in tqdm(range(0, nodes.__len__()), desc="Finding neighbourghs"):
@@ -136,6 +140,8 @@ for i in tqdm(range(0, nodes.__len__()), desc="Finding neighbourghs"):
         print("                               ")
         print("Testing {}-{}".format(i, j))
         side = -1
+        print(nodes[i].pos.x, nodes[j].pos.x)
+        print(nodes[i].pos.y, nodes[j].pos.y)
         if in_range(nodes[i].pos.x, nodes[j].pos.x):
             if nodes[i].pos.y > nodes[j].pos.y:
                 side = 0  # Other up
@@ -148,26 +154,11 @@ for i in tqdm(range(0, nodes.__len__()), desc="Finding neighbourghs"):
                 side = 3  # Other left
 
         if side != -1:
+            """ and nodes[i].connections[side][1] == inf """
             distance = nodes[i].distance(nodes[j])
             nodes[i].set_connection(side, j, distance)
-            """ print("For side {side}, {i} distance from {j} is {dist}".format(
-                side=sides[side], i=i, j=j, dist=distance))
-            if nodes[i].connections[side][1] == inf:
-                nodes[i].set_connection(side, j, distance)
-
-            else: """
-            """ print("Found a lovely pair! {}-{} x".format(i, j)) """
-            """ print("Set direction to {} (act. dist.: {})".format(
-                side, nodes[i].connections[side][1]))
-            distance = nodes[i].distance(nodes[j])
-            if distance <= nodes[i].connections[side][1]:
-                nodes[i].set_connection(side, j, distance)
-                draw.line([(nodes[i].pos.x, nodes[i].pos.y), (nodes[j].pos.x, nodes[j].pos.y)], fill=(
-                    html_to_color(colors["green"])))
-            if distance <= nodes[j].connections[(side+2) % 4][1]:
-                nodes[j].set_connection((side+2) % 4, i, distance)
-                draw.line([(nodes[j].pos.x, nodes[j].pos.y), (nodes[i].pos.x, nodes[i].pos.y)], fill=(
-                    html_to_color(colors["green"]))) """
+            draw.line([nodes[i].pos.to_tuple(), nodes[j].pos.to_tuple()],
+                      fill=html_to_color(colors["green"]))
 
 directions = [
     vec(0, -1),
@@ -179,12 +170,11 @@ for i in tqdm(range(0, nodes.__len__()), desc="Generating connections graph"):
     for s in tqdm(range(0, 4), desc="Doing sides"):
         (nc, dist) = nodes[i].connections[s]
         end = directions[s] * dist + nodes[i].pos
-        end.x = max(end.x, 0)
-        end.x = min(end.x, width)
-        end.y = max(end.y, 0)
-        end.y = min(end.y, height)
         print("{}".format(end))
-
+        j = nodes[i].connections[s][0]
+        if j != -1:
+            draw.line([nodes[i].pos.to_tuple(), nodes[j].pos.to_tuple()],
+                      fill=html_to_color(colors["yellow"]))
         """ draw.line([nodes[i].pos.to_tuple(), end.to_tuple()]) """
 """         end = directions[s] * dist + nodes[i].pos
         draw.line([nodes[i].pos.to_tuple(), end.to_tuple()],

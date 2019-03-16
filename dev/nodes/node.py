@@ -4,12 +4,13 @@ from math import inf
 
 class node:
     pos = vec(-1, -1)
-    connections = [(-1, inf)]*4  # ID,Distance (Up,Right,Down,Left)
+    connections = []  # ID,Distance (Up,Right,Down,Left)
 
     def __init__(self, _pos):
         if not isinstance(_pos, vec):
             _pos = vec(_pos[0], _pos[1])
         self.pos = _pos
+        self.connections = [(-1, inf)]*4
 
     def __str__(self):
         return "{} [{};{};{};{}]".format(self.pos.__str__(), self.connections[0], self.connections[1], self.connections[2], self.connections[3])
