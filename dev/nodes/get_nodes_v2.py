@@ -12,7 +12,7 @@ csv: https://docs.python.org/2/library/csv.html
 
 
 def save():
-    with open("dev_dots.csv", "w") as file:
+    with open("nodes.csv", "w") as file:
         writer = csv.DictWriter(
             file, fieldnames=["id", "x", "y", "up", "right", "down", "left"])
         writer.writeheader()

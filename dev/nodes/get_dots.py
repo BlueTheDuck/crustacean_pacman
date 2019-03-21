@@ -90,7 +90,7 @@ for j in tqdm(range(0, pixelcount), desc="Analyzing bitmap"):
     except IndexError:
         None """
 im2.show()
-with open("../dots.csv", "w") as file:
+with open("dots.csv", "w") as file:
     writer = csv.DictWriter(
         file, fieldnames=["x", "y", "score"])
     writer.writeheader()
