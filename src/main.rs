@@ -128,7 +128,7 @@ fn main() {
         texts: texts,
         dots: dots_map,
     };
-
+    
     while let Some(e) = window.next() {
         if let Some(args) = e.render_args() {
             app.render(args, &mut gl);

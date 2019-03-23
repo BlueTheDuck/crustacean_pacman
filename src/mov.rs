@@ -44,18 +44,18 @@ impl std::convert::From<&PathBuf> for NodeMap {
             let record: csv::StringRecord = result.expect("Error?");
             //println!("{:#?}", record);
             let x = record
-                .get(0)
+                .get(1)
                 .unwrap()
                 .parse::<f64>()
                 .expect("Couldn't parse record [0]");
             let y = record
-                .get(1)
+                .get(2)
                 .unwrap()
                 .parse::<f64>()
                 .expect("Couldn't parse record [1]");
             let mut neighs: [bool; 4] = [false; 4];
-            for i in 2..6 {
-                neighs[i - 2] = record.get(i).unwrap() == "True";
+            for i in 3..7 {
+                neighs[i - 3] = record.get(i).unwrap() != "-1";
             }
             nodes.push(Node {
                 pos: [x, y],
